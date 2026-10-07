@@ -175,7 +175,8 @@ public class DatabaseAPI {
 
             String pName = networkLookup.has("playerName") && !networkLookup.get("playerName").isJsonNull() ? networkLookup.get("playerName").getAsString() : null;
             if (pName != null) {
-                sender.sendMessage(colorize("  &7Player Name: &f" + pName));
+                sender.sendMessage(colorize(plugin.getMessageManager().getMessage("db-player-name", "  &7Player Name: &f{name}")
+                        .replace("{name}", pName)));
             }
 
             if (networkLookup.has("bans") && !networkLookup.get("bans").isJsonNull()) {
@@ -233,10 +234,12 @@ public class DatabaseAPI {
                 if (detects.size() > 0) {
                     sender.sendMessage(colorize(plugin.getMessageManager().getMessage("db-ocean-detections-title", "  &c&lDetections:")));
                     for (int i = 0; i < Math.min(detects.size(), 5); i++) {
-                        sender.sendMessage(colorize("    &c» &f" + detects.get(i).getAsString()));
+                        sender.sendMessage(colorize(plugin.getMessageManager().getMessage("db-detection-item", "    &c» &f{detection}")
+                                .replace("{detection}", detects.get(i).getAsString())));
                     }
                     if (detects.size() > 5) {
-                        sender.sendMessage(colorize("    &7... and " + (detects.size() - 5) + " more"));
+                        sender.sendMessage(colorize(plugin.getMessageManager().getMessage("db-more", "    &7... and {count} more")
+                                .replace("{count}", String.valueOf(detects.size() - 5))));
                     }
                 }
             }

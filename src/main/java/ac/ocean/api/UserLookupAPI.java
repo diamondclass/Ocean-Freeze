@@ -199,7 +199,8 @@ public class UserLookupAPI {
                             .replace("%detection%", detection)));
                 }
                 if (detectionsArray.size() > 10) {
-                    sender.sendMessage(colorize("&7... and " + (detectionsArray.size() - 10) + " more"));
+                    sender.sendMessage(colorize(plugin.getMessageManager().getMessage("lookup-more", "&7... and {count} more")
+                            .replace("{count}", String.valueOf(detectionsArray.size() - 10))));
                 }
             }
         }
@@ -215,7 +216,9 @@ public class UserLookupAPI {
                     JsonObject related = relatedArray.get(i).getAsJsonObject();
                     String relatedUsername = related.has("username") ? related.get("username").getAsString() : "Unknown";
                     String relatedStatus = related.has("overallStatus") ? related.get("overallStatus").getAsString() : "unknown";
-                    sender.sendMessage(colorize("  &7- &f" + relatedUsername + " &7(" + relatedStatus + ")"));
+                    sender.sendMessage(colorize(plugin.getMessageManager().getMessage("lookup-related-account", "  &7- &f{username} &7({status})")
+                            .replace("{username}", relatedUsername)
+                            .replace("{status}", relatedStatus)));
                 }
             }
         }
@@ -283,7 +286,8 @@ public class UserLookupAPI {
                 sender.sendMessage(colorize(plugin.getMessageManager().getMessage("riskscore-cheats-title", "&c&lCheats Detected:")));
                 for (int i = 0; i < Math.min(cheatsArray.size(), 10); i++) {
                     String cheat = cheatsArray.get(i).getAsString();
-                    sender.sendMessage(colorize("&7- &f" + cheat));
+                    sender.sendMessage(colorize(plugin.getMessageManager().getMessage("riskscore-cheat-item", "&7- &f{cheat}")
+                            .replace("{cheat}", cheat)));
                 }
             }
         }

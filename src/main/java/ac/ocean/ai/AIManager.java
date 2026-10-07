@@ -322,7 +322,7 @@ public class AIManager {
 
     private void displayAIResponse(CommandSender sender, String title, String content) {
         if (content == null || content.trim().isEmpty()) {
-            sender.sendMessage(colorize("&c[AI]: No response was generated."));
+            sender.sendMessage(colorize(plugin.getMessageManager().getMessage("ai-no-response", "&c[AI]: No response was generated.")));
             return;
         }
 
