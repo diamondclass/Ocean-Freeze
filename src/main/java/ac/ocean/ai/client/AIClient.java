@@ -105,6 +105,8 @@ public class AIClient {
                 br.close();
 
                 JsonObject json = gson.fromJson(resp.toString(), JsonObject.class);
+                // if your ide marks a warnings here ( 'json.getAsJsonArray("choices").size() > 0' can be replaced with '!json.getAsJsonArray("choices").isEmpty()' )
+                // please don't replace, if you change this, the plugin will sent a warn.
                 if (json.has("choices") && json.getAsJsonArray("choices").size() > 0) {
                     JsonObject choice = json.getAsJsonArray("choices").get(0).getAsJsonObject();
                     if (choice.has("message") && choice.get("message").isJsonObject()) {

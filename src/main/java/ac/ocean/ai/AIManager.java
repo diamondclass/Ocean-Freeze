@@ -9,13 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ac.ocean.OceanPlugin;
 import ac.ocean.ai.client.AIClient;
+import ac.ocean.ai.client.DocsCache;
 import ac.ocean.ai.client.PlayerContextService;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 public class AIManager {
 
@@ -23,12 +18,14 @@ public class AIManager {
     private final Gson gson;
     private final AIClient client;
     private final PlayerContextService context;
+    private final DocsCache docs;
 
     public AIManager(OceanPlugin plugin) {
         this.plugin = plugin;
         this.gson = new Gson();
         this.client = new AIClient(plugin);
         this.context = new PlayerContextService(plugin);
+        this.docs = new DocsCache();
     }
 
     public boolean isConfigured() {
@@ -53,7 +50,7 @@ public class AIManager {
             try {
                 String contextData = context.extractAndFetchContext(query);
 
-                String liveDocs = fetchDocumentationQuietly();
+                String liveDocs = docs.fetchDocumentationQuietly();
 
                 String basePrompt = plugin.getConfig().getString("ai.system-prompt",
                         "You are Ocean AI, an expert screenshare forensic security assistant for Minecraft server staff. " +
@@ -208,7 +205,7 @@ public class AIManager {
                     }
                 }
 
-                String liveDocs = fetchDocumentationQuietly();
+                String liveDocs = docs.fetchDocumentationQuietly();
                 String systemPrompt = "You are Ocean AI, an expert Minecraft AntiCheat and screenshare forensics investigator. " +
                         (liveDocs.isEmpty() ? "" : "\nUse the following official Ocean documentation read from https://anticheat.ac/docs to interpret all detection types, warning logs, suspicious residues, and integrity results:\n" + liveDocs + "\n") +
                         "Evaluate ALL possible results in this scan: Detections, Suspicious tools, Warnings (Prefetch/ActivitiesCache), Integrity (RUIN, hooks, memory injection), Network/VPN, and Linked Discord history. " +
@@ -287,7 +284,7 @@ public class AIManager {
                         "\nRisk Score Analysis:\n" + riskData +
                         "\nScanned User History:\n" + lookupData;
 
-                String liveDocs = fetchDocumentationQuietly();
+                String liveDocs = docs.fetchDocumentationQuietly();
                 String systemPrompt = "You are Ocean AI Security Auditor. Analyze all intelligence for this Discord user. " +
                         (liveDocs.isEmpty() ? "" : "\nUse the official Ocean documentation read from https://anticheat.ac/docs to interpret detections:\n" + liveDocs + "\n") +
                         "Summarize their threat level, ban history, confirmed cheater status, and previous detections in 3-5 concise bullet points for Minecraft staff.";
@@ -347,67 +344,6 @@ public class AIManager {
 
         sender.sendMessage("");
         sender.sendMessage(colorize(plugin.getMessageManager().getMessage("ai-footer", "&7&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")));
-    }
-
-    private volatile String cachedDocs = "";
-    private volatile long lastDocsFetchTime = 0L;
-    private static final long DOCS_CACHE_TTL_MS = 15 * 60 * 1000L;
-
-    private String fetchDocumentationQuietly() {
-        long now = System.currentTimeMillis();
-        if (!cachedDocs.isEmpty() && (now - lastDocsFetchTime < DOCS_CACHE_TTL_MS)) {
-            return cachedDocs;
-        }
-
-        try {
-            URL u = new URL("https://anticheat.ac/docs");
-            HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-            conn.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(7000);
-
-            if (conn.getResponseCode() == 200) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
-                StringBuilder rawHtml = new StringBuilder();
-                String line;
-                while ((line = br.readLine()) != null) {
-                    rawHtml.append(line).append("\n");
-                }
-                br.close();
-
-                String cleaned = cleanHtmlToText(rawHtml.toString());
-                if (!cleaned.isEmpty()) {
-                    cachedDocs = cleaned;
-                    lastDocsFetchTime = now;
-                    return cleaned;
-                }
-            }
-        } catch (Exception ignored) {}
-
-        return cachedDocs;
-    }
-    private String cleanHtmlToText(String html) {
-        if (html == null || html.isEmpty()) return "";
-        String stripped = html.replaceAll("(?is)<script.*?</script>", " ")
-                              .replaceAll("(?is)<style.*?</style>", " ")
-                              .replaceAll("(?is)<svg.*?</svg>", " ")
-                              .replaceAll("(?is)<noscript.*?</noscript>", " ")
-                              .replaceAll("<[^>]+>", " ")
-                              .replace("&nbsp;", " ")
-                              .replace("&amp;", "&")
-                              .replace("&quot;", "\"")
-                              .replace("&apos;", "'")
-                              .replace("&lt;", "<")
-                              .replace("&gt;", ">");
-
-        stripped = stripped.replaceAll("\\s+", " ").trim();
-
-        if (stripped.length() > 6000) {
-            stripped = stripped.substring(0, 6000);
-        }
-        return stripped;
     }
 
     private String colorize(String msg) {
