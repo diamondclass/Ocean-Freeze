@@ -222,12 +222,11 @@ public class OceanCommand implements CommandExecutor, TabCompleter {
 
             if (pin != null && !pin.isEmpty()) {
                 fetchAndAnalyzePin(sender, pin, onlinePlayer.getName());
-                return;
             } else {
                 sender.sendMessage(colorize("&7[AI] &ePlayer &f" + onlinePlayer.getName() + " &ehas no active scan PIN. Consulting AI on player..."));
                 plugin.getAiManager().ask(sender, "Provide an anti-cheat review and recommendation for player " + onlinePlayer.getName() + " (currently frozen: " + frozen + ")");
-                return;
             }
+            return;
         }
 
         if (target.matches("^\\d{5,25}$")) {
