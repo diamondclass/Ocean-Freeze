@@ -49,32 +49,35 @@ public class UserLookupAPI {
                 int responseCode = conn.getResponseCode();
                 plugin.getLogger().info("[API] Response: " + responseCode + " from GET " + fullUrl);
 
-                if (responseCode == 200) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        response.append(line);
-                    }
-                    br.close();
+                switch (responseCode) {
+                    case 200:
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+                        StringBuilder response = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            response.append(line);
+                        }
+                        br.close();
 
-                    JsonObject data = gson.fromJson(response.toString(), JsonObject.class);
+                        JsonObject data = gson.fromJson(response.toString(), JsonObject.class);
 
-                    Bukkit.getScheduler().runTask(plugin, () -> displayUserLookup(sender, data));
+                        Bukkit.getScheduler().runTask(plugin, () -> displayUserLookup(sender, data));
+                        break;
+                    case 404:
+                        plugin.getLogger().info("[API] User not found: " + discordId);
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            String msg = plugin.getMessageManager().getMessage("lookup-not-found",
+                                    "&c✗ User not found in scan database.");
+                            sender.sendMessage(colorize(msg.replace("%discordid%", discordId)));
+                        });
+                        break;
+                    default:
+                        String errorBody = readErrorStream(conn);
+                        logApiError("GET", fullUrl, responseCode, errorBody);
 
-                } else if (responseCode == 404) {
-                    plugin.getLogger().info("[API] User not found: " + discordId);
-                    Bukkit.getScheduler().runTask(plugin, () -> {
-                        String msg = plugin.getMessageManager().getMessage("lookup-not-found",
-                                "&c✗ User not found in scan database.");
-                        sender.sendMessage(colorize(msg.replace("%discordid%", discordId)));
-                    });
-                } else {
-                    String errorBody = readErrorStream(conn);
-                    logApiError("GET", fullUrl, responseCode, errorBody);
-
-                    Bukkit.getScheduler().runTask(plugin, () -> sender.sendMessage(colorize(plugin.getMessageManager().getMessage("api-error",
-                            "&cAPI Error: %error%").replace("%error%", String.valueOf(responseCode)))));
+                        Bukkit.getScheduler().runTask(plugin, () -> sender.sendMessage(colorize(plugin.getMessageManager().getMessage("api-error",
+                                "&cAPI Error: %error%").replace("%error%", String.valueOf(responseCode)))));
+                        break;
                 }
 
                 conn.disconnect();
@@ -109,32 +112,35 @@ public class UserLookupAPI {
                 int responseCode = conn.getResponseCode();
                 plugin.getLogger().info("[API] Response: " + responseCode + " from GET " + fullUrl);
 
-                if (responseCode == 200) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        response.append(line);
-                    }
-                    br.close();
+                switch (responseCode) {
+                    case 200:
+                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+                        StringBuilder response = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            response.append(line);
+                        }
+                        br.close();
 
-                    JsonObject data = gson.fromJson(response.toString(), JsonObject.class);
+                        JsonObject data = gson.fromJson(response.toString(), JsonObject.class);
 
-                    Bukkit.getScheduler().runTask(plugin, () -> displayRiskScore(sender, data));
+                        Bukkit.getScheduler().runTask(plugin, () -> displayRiskScore(sender, data));
+                        break;
+                    case 404:
+                        plugin.getLogger().info("[API] No risk data found for: " + discordId);
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            String msg = plugin.getMessageManager().getMessage("riskscore-not-found",
+                                    "&c✗ No risk data found for this user.");
+                            sender.sendMessage(colorize(msg.replace("%discordid%", discordId)));
+                        });
+                        break;
+                    default:
+                        String errorBody = readErrorStream(conn);
+                        logApiError("GET", fullUrl, responseCode, errorBody);
 
-                } else if (responseCode == 404) {
-                    plugin.getLogger().info("[API] No risk data found for: " + discordId);
-                    Bukkit.getScheduler().runTask(plugin, () -> {
-                        String msg = plugin.getMessageManager().getMessage("riskscore-not-found",
-                                "&c✗ No risk data found for this user.");
-                        sender.sendMessage(colorize(msg.replace("%discordid%", discordId)));
-                    });
-                } else {
-                    String errorBody = readErrorStream(conn);
-                    logApiError("GET", fullUrl, responseCode, errorBody);
-
-                    Bukkit.getScheduler().runTask(plugin, () -> sender.sendMessage(colorize(plugin.getMessageManager().getMessage("api-error",
-                            "&cAPI Error: %error%").replace("%error%", String.valueOf(responseCode)))));
+                        Bukkit.getScheduler().runTask(plugin, () -> sender.sendMessage(colorize(plugin.getMessageManager().getMessage("api-error",
+                                "&cAPI Error: %error%").replace("%error%", String.valueOf(responseCode)))));
+                        break;
                 }
 
                 conn.disconnect();
