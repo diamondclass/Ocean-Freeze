@@ -60,9 +60,7 @@ public class UserLookupAPI {
 
                     JsonObject data = gson.fromJson(response.toString(), JsonObject.class);
 
-                    Bukkit.getScheduler().runTask(plugin, () -> {
-                        displayUserLookup(sender, data);
-                    });
+                    Bukkit.getScheduler().runTask(plugin, () -> displayUserLookup(sender, data));
 
                 } else if (responseCode == 404) {
                     plugin.getLogger().info("[API] User not found: " + discordId);
@@ -75,19 +73,15 @@ public class UserLookupAPI {
                     String errorBody = readErrorStream(conn);
                     logApiError("GET", fullUrl, responseCode, errorBody);
 
-                    Bukkit.getScheduler().runTask(plugin, () -> {
-                        sender.sendMessage(colorize(plugin.getMessageManager().getMessage("api-error",
-                                "&cAPI Error: %error%").replace("%error%", String.valueOf(responseCode))));
-                    });
+                    Bukkit.getScheduler().runTask(plugin, () -> sender.sendMessage(colorize(plugin.getMessageManager().getMessage("api-error",
+                            "&cAPI Error: %error%").replace("%error%", String.valueOf(responseCode)))));
                 }
 
                 conn.disconnect();
 
             } catch (Exception e) {
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    sender.sendMessage(colorize(plugin.getMessageManager().getMessage("api-error",
-                            "&cAPI Error: %error%").replace("%error%", e.getMessage())));
-                });
+                Bukkit.getScheduler().runTask(plugin, () -> sender.sendMessage(colorize(plugin.getMessageManager().getMessage("api-error",
+                        "&cAPI Error: %error%").replace("%error%", e.getMessage()))));
                 logApiException("lookupUser", fullUrl, e);
             }
         });
@@ -126,9 +120,7 @@ public class UserLookupAPI {
 
                     JsonObject data = gson.fromJson(response.toString(), JsonObject.class);
 
-                    Bukkit.getScheduler().runTask(plugin, () -> {
-                        displayRiskScore(sender, data);
-                    });
+                    Bukkit.getScheduler().runTask(plugin, () -> displayRiskScore(sender, data));
 
                 } else if (responseCode == 404) {
                     plugin.getLogger().info("[API] No risk data found for: " + discordId);
@@ -141,19 +133,15 @@ public class UserLookupAPI {
                     String errorBody = readErrorStream(conn);
                     logApiError("GET", fullUrl, responseCode, errorBody);
 
-                    Bukkit.getScheduler().runTask(plugin, () -> {
-                        sender.sendMessage(colorize(plugin.getMessageManager().getMessage("api-error",
-                                "&cAPI Error: %error%").replace("%error%", String.valueOf(responseCode))));
-                    });
+                    Bukkit.getScheduler().runTask(plugin, () -> sender.sendMessage(colorize(plugin.getMessageManager().getMessage("api-error",
+                            "&cAPI Error: %error%").replace("%error%", String.valueOf(responseCode)))));
                 }
 
                 conn.disconnect();
 
             } catch (Exception e) {
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    sender.sendMessage(colorize(plugin.getMessageManager().getMessage("api-error",
-                            "&cAPI Error: %error%").replace("%error%", e.getMessage())));
-                });
+                Bukkit.getScheduler().runTask(plugin, () -> sender.sendMessage(colorize(plugin.getMessageManager().getMessage("api-error",
+                        "&cAPI Error: %error%").replace("%error%", e.getMessage()))));
                 logApiException("getRiskScore", fullUrl, e);
             }
         });
