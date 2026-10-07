@@ -67,7 +67,7 @@ public class ConfigGUI implements Listener {
                 "§eClick to toggle!"
         ));
 
-        boolean Ruin = plugin.getConfig().getBoolean("anticheat.Ruin", false);
+        boolean Ruin = plugin.getConfig().getBoolean("anticheat.RUIN", true);
         gui.setItem(16, createItem(
                 Ruin ? Material.GOLD_BLOCK : Material.IRON_BLOCK,
                 "§e§lRuin Mode Analysis",
@@ -185,7 +185,7 @@ public class ConfigGUI implements Listener {
                 break;
 
             case 16:
-                toggleBoolean(player, "anticheat.Ruin");
+                toggleBoolean(player, "anticheat.RUIN");
                 open(player);
                 break;
 
