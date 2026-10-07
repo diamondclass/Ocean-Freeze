@@ -193,6 +193,14 @@ settings:
     - "plugman"
     - "pl"
 
+# ═════════════════ Command Aliases ═════════════════
+commands:
+  # Aliases for the freeze command (the primary name "ss" always works)
+  # Changes apply on restart or with /ocean reload
+  ss-aliases:
+    - "freeze"
+    - "froze"
+
 # ══════════════════ Discord Webhook Configuration ══════════════════
 discord:
   # Discord webhook URL (set to "none" to disable)

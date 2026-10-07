@@ -312,6 +312,7 @@ public class OceanCommand implements CommandExecutor, TabCompleter {
         plugin.reloadConfig();
         plugin.getMessageManager().reload();
         plugin.getFreezeListener().reloadAllowedCommands();
+        plugin.applyCommandAliases();
         sender.sendMessage(colorize(plugin.getMessageManager().getMessage("config-reloaded",
                 "&aConfiguration reloaded from disk!")));
     }

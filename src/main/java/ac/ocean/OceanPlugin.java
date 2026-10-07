@@ -16,6 +16,9 @@ import ac.ocean.gui.ConfigGUI;
 import ac.ocean.gui.FreezeGUI;
 import ac.ocean.manager.MessageManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 public class OceanPlugin extends JavaPlugin {
 
@@ -41,6 +44,33 @@ public class OceanPlugin extends JavaPlugin {
         return aiManager;
     }
 
+    public void applyCommandAliases() {
+        if (!getConfig().isSet("commands.ss-aliases")) {
+            return;
+        }
+        if (getCommand("ss") == null) {
+            getLogger().warning("Cannot apply command aliases: 'ss' is not declared in plugin.yml");
+            return;
+        }
+        List<String> valid = new ArrayList<>();
+        for (String raw : getConfig().getStringList("commands.ss-aliases")) {
+            if (raw == null) {
+                continue;
+            }
+            String alias = raw.trim().toLowerCase();
+            if (alias.isEmpty() || alias.equals("ss") || valid.contains(alias)) {
+                continue;
+            }
+            if (alias.equals("ocean") || !alias.matches("[a-z0-9_-]+")) {
+                getLogger().warning("Ignoring invalid ss alias '" + raw + "'");
+                continue;
+            }
+            valid.add(alias);
+        }
+        getCommand("ss").setAliases(valid);
+        getLogger().info("Freeze command aliases: " + valid);
+    }
+
     @Override
     public void onEnable() {
         instance = this;
@@ -58,13 +88,16 @@ public class OceanPlugin extends JavaPlugin {
         webhookManager = new WebhookManager(this);
 
         FreezeCommand freezeCommand = new FreezeCommand(this);
-        getCommand("ss").setExecutor(freezeCommand);
-        getCommand("freeze").setExecutor(freezeCommand);
-        getCommand("froze").setExecutor(freezeCommand);
+        if (getCommand("ss") != null) {
+            getCommand("ss").setExecutor(freezeCommand);
+        }
 
         OceanCommand oceanCommand = new OceanCommand(this);
-        getCommand("ocean").setExecutor(oceanCommand);
-        getCommand("ocean").setTabCompleter(oceanCommand);
+        if (getCommand("ocean") != null) {
+            getCommand("ocean").setExecutor(oceanCommand);
+            getCommand("ocean").setTabCompleter(oceanCommand);
+        }
+        applyCommandAliases();
 
         freezeListener = new FreezeListener(this);
         freezeGUI = new FreezeGUI(this);
