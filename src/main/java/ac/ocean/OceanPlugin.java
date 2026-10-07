@@ -2,6 +2,7 @@ package ac.ocean;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import ac.ocean.commands.FreezeCommand;
 import ac.ocean.commands.OceanCommand;
@@ -49,7 +50,7 @@ public class OceanPlugin extends JavaPlugin {
             return;
         }
         if (getCommand("ss") == null) {
-            getLogger().warning("Cannot apply command aliases: 'ss' is not declared in plugin.yml");
+            log(LogLevel.WARN, "Cannot apply command aliases: 'ss' is not declared in plugin.yml");
             return;
         }
         List<String> valid = new ArrayList<>();
@@ -62,13 +63,13 @@ public class OceanPlugin extends JavaPlugin {
                 continue;
             }
             if (alias.equals("ocean") || !alias.matches("[a-z0-9_-]+")) {
-                getLogger().warning("Ignoring invalid ss alias '" + raw + "'");
+                log(LogLevel.WARN, "Ignoring invalid ss alias '" + raw + "'");
                 continue;
             }
             valid.add(alias);
         }
         getCommand("ss").setAliases(valid);
-        getLogger().info("Freeze command aliases: " + valid);
+        log(LogLevel.INFO, "Freeze command aliases: " + valid);
     }
 
     @Override
@@ -114,10 +115,23 @@ public class OceanPlugin extends JavaPlugin {
             freezeManager.unfreezeAll();
         }
 
-        getLogger().info("╔════════════════════════════════════════╗");
-        getLogger().info("║     Ocean - Disabled            ║");
-        getLogger().info("║     Thanks for using Ocean!            ║");
-        getLogger().info("╚════════════════════════════════════════╝");
+        log(LogLevel.INFO, "╔════════════════════════════════════════╗");
+        log(LogLevel.INFO, "&c║     Ocean - Disabled            ║");
+        log(LogLevel.INFO, "&b║     Thanks for using Ocean!            ║");
+        log(LogLevel.INFO, "╚════════════════════════════════════════╝");
+    }
+
+    public enum LogLevel {
+        INFO, WARN
+    }
+
+    public void log(LogLevel level, String message) {
+        String colored = ChatColor.translateAlternateColorCodes('&', message);
+        if (level == LogLevel.WARN) {
+            getLogger().warning(colored);
+        } else {
+            getLogger().info(colored);
+        }
     }
 
     private void printStartupBanner() {
@@ -130,26 +144,28 @@ public class OceanPlugin extends JavaPlugin {
         boolean webhookConfigured = !webhookUrl.equals("none") && !webhookUrl.isEmpty();
         boolean aiConfigured = aiManager != null && aiManager.isConfigured();
 
-        getLogger().info("╔════════════════════════════════════════╗");
-        getLogger().info("║                                        ║");
-        getLogger().info("║        🌊 OCEAN PLUGIN 🌊       ║");
-        getLogger().info("║                                        ║");
-        getLogger().info("╠════════════════════════════════════════╣");
-        getLogger().info("║  Version: " + String.format("%-28s", version) + " ║");
-        getLogger().info("║  Author:  " + String.format("%-28s", author) + " ║");
-        getLogger().info("╠════════════════════════════════════════╣");
-        getLogger().info("║  📋 CONFIGURATION STATUS               ║");
-        getLogger().info("║  ├─ Freeze Mode: " + String.format("%-20s", freezeMode) + " ║");
-        getLogger().info("║  ├─ Ocean API: " + String.format("%-15s", apiConfigured ? "✓ Configured" : "✗ Not Set") + " ║");
-        getLogger().info("║  ├─ Discord Webhook: " + String.format("%-13s", webhookConfigured ? "✓ Configured" : "✗ Not Set") + " ║");
-        getLogger().info("║  └─ AI Assistant: " + String.format("%-16s", aiConfigured ? "✓ Configured" : "✗ Not Set") + " ║");
-        getLogger().info("╠════════════════════════════════════════╣");
-        getLogger().info("║  🚀 Plugin successfully initialized!   ║");
-        getLogger().info("╚════════════════════════════════════════╝");
+        log(LogLevel.INFO, "╔════════════════════════════════════════╗");
+        log(LogLevel.INFO, "║                                        ║");
+        log(LogLevel.INFO, "║        &b🌊 OCEAN PLUGIN 🌊&r       ║");
+        log(LogLevel.INFO, "║                                        ║");
+        log(LogLevel.INFO, "╠════════════════════════════════════════╣");
+        log(LogLevel.INFO, "║  &fVersion: " + String.format("%-28s", version) + "&r ║");
+        log(LogLevel.INFO, "║  &fAuthor: " + String.format("%-28s", author) + "&r  ║");
+        log(LogLevel.INFO, "╠════════════════════════════════════════╣");
+        log(LogLevel.INFO, "║  &b📋 CONFIGURATION STATUS&r               ║");
+        log(LogLevel.INFO, "║  ├─ &fFreeze Mode: " + String.format("%-20s", freezeMode) + " ║");
+        String configured = "&a✓ Configured&r";
+        String notSet = "&c✗ Not Set&r";
+        log(LogLevel.INFO, "║  ├─ &fOcean API: " + String.format("%-15s", apiConfigured ? configured : notSet) + " ║");
+        log(LogLevel.INFO, "║  ├─ &fDiscord Webhook: " + String.format("%-13s", webhookConfigured ? configured : notSet) + " ║");
+        log(LogLevel.INFO, "║  └─ &fAI Assistant: " + String.format("%-16s", aiConfigured ? configured : notSet) + " ║");
+        log(LogLevel.INFO, "╠════════════════════════════════════════╣");
+        log(LogLevel.INFO, "║  &a🚀 Plugin successfully initialized!&r   ║");
+        log(LogLevel.INFO, "╚════════════════════════════════════════╝");
 
         if (!apiConfigured) {
-            getLogger().warning("⚠ Ocean API key not configured!");
-            getLogger().warning("⚠ Set 'anticheat.api-key' in config.yml");
+            log(LogLevel.WARN, "&e⚠ Ocean API key not configured!&r");
+            log(LogLevel.WARN, "&e⚠ Set 'anticheat.api-key' in config.yml&r");
         }
     }
 }
