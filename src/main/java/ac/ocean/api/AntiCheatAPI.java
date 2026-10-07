@@ -95,9 +95,8 @@ public class AntiCheatAPI {
 
                 } else {
                     String errorResponse = readErrorStream(conn);
-                    String errorMessage = parseErrorMessage(errorResponse);
+                    final String errorMessage = parseErrorMessage(errorResponse);
 
-                    String finalMessage = errorMessage;
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         MessageManager msg = plugin.getMessageManager();
                         staff.sendMessage(colorize(msg.getMessage("scan-pin-failed",
@@ -105,7 +104,7 @@ public class AntiCheatAPI {
                         staff.sendMessage(colorize(msg.getMessage("scan-pin-error",
                                 "&cError %code%: &f%error%")
                                 .replace("%code%", String.valueOf(responseCode))
-                                .replace("%error%", finalMessage)));
+                                .replace("%error%", errorMessage)));
                     });
                     logApiError("POST", fullUrl, responseCode, errorResponse);
                 }
@@ -188,9 +187,8 @@ public class AntiCheatAPI {
 
                 } else {
                     String errorResponse = readErrorStream(conn);
-                    String errorMessage = parseErrorMessage(errorResponse);
+                    final String errorMessage = parseErrorMessage(errorResponse);
 
-                    String finalMessage = errorMessage;
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         MessageManager msg = plugin.getMessageManager();
                         staff.sendMessage(colorize(msg.getMessage("scan-pin-failed",
@@ -198,7 +196,7 @@ public class AntiCheatAPI {
                         staff.sendMessage(colorize(msg.getMessage("scan-pin-error",
                                 "&cError %code%: &f%error%")
                                 .replace("%code%", String.valueOf(responseCode))
-                                .replace("%error%", finalMessage)));
+                                .replace("%error%", errorMessage)));
                     });
                     logApiError("POST", fullUrl, responseCode, errorResponse);
                 }
