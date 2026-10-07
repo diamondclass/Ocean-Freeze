@@ -520,7 +520,7 @@ public class AntiCheatAPI {
                                         JsonObject data = resultsJson.getAsJsonObject("data");
                                         if (data.has("discord") && !data.get("discord").isJsonNull() && data.get("discord").isJsonArray()) {
                                             JsonArray discordAccounts = data.getAsJsonArray("discord");
-                                            if (!discordAccounts.isEmpty()) {
+                                            if (discordAccounts.size() > 0) {
                                                 staff.sendMessage("");
                                                 String relatedTitle = msg.getMessage("scan-results-related-title",
                                                         "&6&lDiscord Accounts Detected: %count%");
