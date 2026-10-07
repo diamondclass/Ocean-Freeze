@@ -1,7 +1,7 @@
-# ════════════════════ Ocean - Messages Configuration ════════════════════
+# Ocean - Messages Configuration
 # All plugin messages are customizable here.
-# Variables: %player%, %staff%, %pin%
-# Color codes: Use & for color codes (e.g., &a for green, &c for red)
+# Each message only supports the placeholders shown in its default value.
+# Color codes: use & (e.g., &a green, &c red). Multi-line messages are lists.
 
 # ═══ Freeze Messages ═══
 frozen:
@@ -238,17 +238,17 @@ help-footer: "&7&m━━━━━━━━━━━━━━━━━━━━�
 # ═══ Command Help (list, one entry per line) ═══
 help:
   - "&7&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  - "&e&lOcean Plugin"
-  - "&e/ocean scan <player> &7- Start screenshare scan"
-  - "&e/ocean lookup <discordId> &7- View user scan history"
-  - "&e/ocean riskscore <discordId> &7- Check user risk analysis"
-  - "&e/ocean db <discordId> &7- Query Cheater Database"
-  - "&e/ocean ai <player|pin|discordId> &7- AI screenshare verdict & analysis"
-  - "&e/ocean ask <question> &7- Ask Ocean AI assistant"
-  - "&e/ocean config &7- Open configuration GUI"
-  - "&e/ocean mode [AUTO|MANUAL] &7- Change freeze mode"
-  - "&e/ocean reload &7- Reload configuration"
-  - "&e/ocean help &7- Show this help"
+  - "&b&lOcean Plugin"
+  - "&7■ &f/ocean scan <player> &8- &7Start screenshare scan"
+  - "&7■ &f/ocean lookup <discordId> &8- &7View user scan history"
+  - "&7■ &f/ocean riskscore <discordId> &8- &7Check user risk analysis"
+  - "&7■ &f/ocean db <discordId> &8- &7Query Cheater Database"
+  - "&7■ &f/ocean ai <player|pin|discordId> &8- &7AI screenshare verdict & analysis"
+  - "&7■ &f/ocean ask <question> &8- &7Ask Ocean AI assistant"
+  - "&7■ &f/ocean config &8- &7Open configuration GUI"
+  - "&7■ &f/ocean mode [AUTO|MANUAL] &8- &7Change freeze mode"
+  - "&7■ &f/ocean reload &8- &7Reload configuration"
+  - "&7■ &f/ocean help &78- &7Show this help"
   - "&7&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 # ═══ Dynamic Single-Line Messages ═══
 lookup-more: "&7... and {count} more"
