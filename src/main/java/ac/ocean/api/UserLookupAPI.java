@@ -245,9 +245,17 @@ public class UserLookupAPI {
         int linkedProfiles = data.has("linkedProfiles") ? data.get("linkedProfiles").getAsInt() : 0;
 
         String scoreColor = "&a";
-        if (riskLevel.equals("medium")) scoreColor = "&e";
-        else if (riskLevel.equals("high")) scoreColor = "&6";
-        else if (riskLevel.equals("critical")) scoreColor = "&c";
+        switch (riskLevel) {
+            case "medium":
+                scoreColor = "&e";
+                break;
+            case "high":
+                scoreColor = "&6";
+                break;
+            case "critical":
+                scoreColor = "&c";
+                break;
+        }
 
         sender.sendMessage(colorize(plugin.getMessageManager().getMessage("riskscore-header", "&7&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")));
         sender.sendMessage(colorize(plugin.getMessageManager().getMessage("riskscore-title", "&e&lRisk Score Analysis")));

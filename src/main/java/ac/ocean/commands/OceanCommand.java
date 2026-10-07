@@ -52,12 +52,27 @@ public class OceanCommand implements CommandExecutor, TabCompleter {
                             "&cYou don't have permission to use this command!")));
                     return true;
                 }
-                if (subCommand.equals("scan")) handleScan(sender, args);
-                else if (subCommand.equals("lookup")) handleLookup(sender, args);
-                else if (subCommand.equals("riskscore")) handleRiskScore(sender, args);
-                else if (subCommand.equals("db") || subCommand.equals("database")) handleDatabase(sender, args);
-                else if (subCommand.equals("ai")) handleAI(sender, args);
-                else handleAsk(sender, args);
+                switch (subCommand) {
+                    case "scan":
+                        handleScan(sender, args);
+                        break;
+                    case "lookup":
+                        handleLookup(sender, args);
+                        break;
+                    case "riskscore":
+                        handleRiskScore(sender, args);
+                        break;
+                    case "db":
+                    case "database":
+                        handleDatabase(sender, args);
+                        break;
+                    case "ai":
+                        handleAI(sender, args);
+                        break;
+                    default:
+                        handleAsk(sender, args);
+                        break;
+                }
                 break;
 
             case "config":
