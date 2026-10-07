@@ -1,5 +1,6 @@
 package ac.ocean;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import ac.ocean.commands.FreezeCommand;
@@ -25,10 +26,20 @@ public class OceanPlugin extends JavaPlugin {
     private AntiCheatAPI antiCheatAPI;
     private UserLookupAPI userLookupAPI;
     private DatabaseAPI databaseAPI;
+    @Getter(AccessLevel.NONE)
     private AIManager aiManager;
     private WebhookManager webhookManager;
     private FreezeListener freezeListener;
     private FreezeGUI freezeGUI;
+
+    @Deprecated
+    public AIManager getAIManager() {
+        return aiManager;
+    }
+
+    public AIManager getAiManager() {
+        return aiManager;
+    }
 
     @Override
     public void onEnable() {
